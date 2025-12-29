@@ -1,6 +1,12 @@
 # CODEALPHA-INTERNSHIP----Task-4
-PROJECT TITLE
+PROJECT TITLE :
 Advanced Sentiment Analysis on Text Data Using Machine Learning & NLP
+
+Name: Vaishnavi K
+Company: codealpha
+Internship ID: CA/DE1/3618
+Domain: Data Analytics / sentiment Analysis
+Duration: 1st December to 30th December
 
 This project implements sentiment analysis using Natural Language Processing and lexicon-based techniques. Text data from sources such as product reviews, social media, and news articles were analyzed to classify sentiments as positive, negative, or neutral. VADER sentiment lexicon was used for emotion detection, and machine learning models were applied to understand public opinion and sentiment trends. The results can support marketing strategies, product development, and social insights.
 
