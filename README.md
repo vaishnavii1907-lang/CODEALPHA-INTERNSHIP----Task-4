@@ -64,3 +64,11 @@ This project successfully demonstrates end-to-end sentiment analysis using NLP a
 Multiple models were trained and evaluated, ensuring robustness and accuracy.
 Such systems are widely used in customer feedback analysis, social media monitoring, and business intelligence.
 This project is highly suitable for internship submissions, resumes, and GitHub portfolios.
+
+
+![Screenshot_30-12-2025_032_localhost](https://github.com/user-attachments/assets/7ed5a9f9-c886-4378-b6a5-da4fe7fbcdaf)
+![Screenshot_30-12-2025_0329_localhost](https://github.com/user-attachments/assets/5276a1a0-8f78-460f-921c-b164a5e5c31d)
+![Screenshot_30-12-2025_0423_localhost](https://github.com/user-attachments/assets/bc85d43c-1e5f-4c31-9df3-c657df75cb5c)
+![Screenshot_30-12-2025_0451_localhost](https://github.com/user-attachments/assets/f4b70be5-084a-4cf9-b6aa-15be3c6aec7e)
+
+
