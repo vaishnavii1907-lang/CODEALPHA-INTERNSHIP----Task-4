@@ -1,0 +1,154 @@
+# ============================================================
+# TASK 4: SENTIMENT ANALYSIS USING NLP & LEXICON METHODS
+# ============================================================
+# -----------------------------
+# 1. IMPORT REQUIRED LIBRARIEs
+# -----------------------------
+import pandas as pd
+import numpy as np
+import re
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix
+
+import warnings
+warnings.filterwarnings("ignore")
+
+# -----------------------------
+# 2. DOWNLOAD REQUIRED NLTK DATA
+# -----------------------------
+nltk.download('stopwords')
+nltk.download('vader_lexicon')
+
+# -----------------------------
+# 3. CREATE SAMPLE DATASET
+# (Amazon reviews / social media / news style)
+# -----------------------------
+data = {
+    "Text": [
+        "The product quality is excellent and I am very happy",
+        "Worst experience ever, completely disappointed",
+        "The service was okay, nothing special",
+        "Amazing delivery speed and great packaging",
+        "This is a terrible product, waste of money",
+        "Good value for the price",
+        "Not satisfied with customer support",
+        "Average experience, could be improved",
+        "Fantastic product and very reliable",
+        "Bad quality and poor service",
+        "I love this product, highly recommended",
+        "Horrible experience, will never buy again",
+        "The news was informative and neutral",
+        "Social media reactions are very positive",
+        "Public opinion seems mixed on this topic"
+    ]
+}
+
+df = pd.DataFrame(data)
+
+print("Dataset Loaded Successfully\n")
+print(df.head())
+
+# -----------------------------
+# 4. TEXT PREPROCESSING
+# -----------------------------
+stemmer = PorterStemmer()
+stop_words = set(stopwords.words('english'))
+
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r'[^a-zA-Z]', ' ', text)
+    words = text.split()
+    words = [stemmer.stem(word) for word in words if word not in stop_words]
+    return " ".join(words)
+
+df["Cleaned_Text"] = df["Text"].apply(clean_text)
+
+print("\nText Preprocessing Completed\n")
+print(df[["Text", "Cleaned_Text"]].head())
+
+# -----------------------------
+# 5. LEXICON-BASED SENTIMENT (VADER)
+# -----------------------------
+sia = SentimentIntensityAnalyzer()
+
+def vader_sentiment(text):
+    score = sia.polarity_scores(text)['compound']
+    if score >= 0.05:
+        return "Positive"
+    elif score <= -0.05:
+        return "Negative"
+    else:
+        return "Neutral"
+
+df["VADER_Sentiment"] = df["Text"].apply(vader_sentiment)
+
+print("\nVADER Sentiment Analysis Output\n")
+print(df[["Text", "VADER_Sentiment"]].head())
+
+# -----------------------------
+# 6. MACHINE LEARNING APPROACH
+# -----------------------------
+vectorizer = TfidfVectorizer(max_features=500)
+X = vectorizer.fit_transform(df["Cleaned_Text"])
+y = df["VADER_Sentiment"]   # Using lexicon result as target
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42, stratify=y
+)
+
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# -----------------------------
+# 7. MODEL EVALUATION
+# -----------------------------
+y_pred = model.predict(X_test)
+
+print("\nMachine Learning Model Performance\n")
+print("Accuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n")
+print(classification_report(y_test, y_pred))
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(5,4))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
+            xticklabels=model.classes_,
+            yticklabels=model.classes_)
+plt.title("Confusion Matrix")
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.show()
+
+# -----------------------------
+# 8. SENTIMENT DISTRIBUTION (TREND ANALYSIS)
+# -----------------------------
+plt.figure(figsize=(6,4))
+sns.countplot(x=df["VADER_Sentiment"])
+plt.title("Public Opinion & Sentiment Trends")
+plt.xlabel("Sentiment")
+plt.ylabel("Count")
+plt.show()
+
+# -----------------------------
+# 9. CUSTOM TEXT PREDICTION
+# -----------------------------
+def predict_sentiment(text):
+    cleaned = clean_text(text)
+    vector = vectorizer.transform([cleaned])
+    return model.predict(vector)[0]
+
+sample_text = "The product is very useful and people love it"
+print("\nCustom Text:", sample_text)
+print("Predicted Sentiment:", predict_sentiment(sample_text))
